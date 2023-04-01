@@ -7,7 +7,7 @@ class CategoriesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         image: DecorationImage(
           opacity: 0.5,
           image: AssetImage("assets/images/one.jpeg"),
@@ -16,7 +16,7 @@ class CategoriesScreen extends StatelessWidget {
       ),
       child: GridView(
         padding: const EdgeInsets.all(25),
-        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
           maxCrossAxisExtent: 200,
           childAspectRatio: 3 / 2,
           crossAxisSpacing: 20,
@@ -29,8 +29,7 @@ class CategoriesScreen extends StatelessWidget {
                     catData.title,
                     catData.color,
                   ),
-            )
-            .toList(),
+            ).toList(),
       ),
     );
   }

@@ -7,8 +7,10 @@ import '../models/meal.dart';
 
 class TabsScreen extends StatefulWidget {
   final List<Meal> favoriteMeals;
+  final Function toggleFavorite;
+  final Function isFavorite;
 
-  TabsScreen(this.favoriteMeals);
+  TabsScreen(this.favoriteMeals, this.toggleFavorite, this.isFavorite,);
 
   @override
   _TabsScreenState createState() => _TabsScreenState();
@@ -26,7 +28,7 @@ class _TabsScreenState extends State<TabsScreen> {
         'title': 'Categories',
       },
       {
-        'page': FavoritesScreen(widget.favoriteMeals),
+        'page': FavoritesScreen(widget.favoriteMeals, widget.toggleFavorite, widget.isFavorite,),
         'title': 'Your Favorite',
       },
     ];

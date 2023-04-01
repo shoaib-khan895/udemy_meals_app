@@ -5,9 +5,10 @@ import '../widgets/meal_item.dart';
 
 class FavoritesScreen extends StatefulWidget {
   final List<Meal> favoriteMeals;
+  final Function toggleFavorite;
+  final Function isFavorite;
 
-
-  FavoritesScreen(this.favoriteMeals, {Key key}) : super(key: key);
+  FavoritesScreen(this.favoriteMeals,  this.toggleFavorite, this.isFavorite) ;
 
   @override
   State<FavoritesScreen> createState() => _FavoritesScreenState();
@@ -30,11 +31,12 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             duration: widget.favoriteMeals[index].duration,
             affordability: widget.favoriteMeals[index].affordability,
             complexity: widget.favoriteMeals[index].complexity,
+            toggleFavorite: widget.toggleFavorite,
+            isFavorite: widget.isFavorite,
           );
         },
         itemCount: widget.favoriteMeals.length,
       );
     }
   }
-
 }

@@ -1,3 +1,4 @@
+import 'package:favorite_button/favorite_button.dart';
 import 'package:flutter/material.dart';
 
 import '../dummy_data.dart';
@@ -46,13 +47,27 @@ class MealDetailScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Container(
-              height: 300,
-              width: double.infinity,
-              child: Image.asset(
-                selectedMeal.imageUrl,
-                fit: BoxFit.cover,
+            Stack(
+              children: [Container(
+                height: 300,
+                width: double.infinity,
+                child: Image.asset(
+                  selectedMeal.imageUrl,
+                  fit: BoxFit.cover,
+                ),
               ),
+                Positioned(bottom: 15,
+                  right: 15,
+                  child: FavoriteButton(
+                   iconDisabledColor: Colors.red,
+                  iconSize: 50.0,
+                  valueChanged: (isFavorite) {
+                    toggleFavorite(mealId);
+                         Navigator.pushNamed(context, '/');
+                  },
+              ),
+                )
+              ]
             ),
             buildSectionTitle(context, 'Ingredients'),
             buildContainer(
@@ -88,15 +103,19 @@ class MealDetailScreen extends StatelessWidget {
                 itemCount: selectedMeal.steps.length,
               ),
             ),
+
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(
-           isFavorite(mealId) ? Icons.star : Icons.star_border,
-        ),
-        onPressed: () => toggleFavorite(mealId),
-      ),
+
+      // floatingActionButton: FloatingActionButton(
+      //   child: Icon(
+      //      isFavorite(mealId) ? Icons.star : Icons.star_border,
+      //   ),
+      //   onPressed: () {toggleFavorite(mealId);
+      //     Navigator.pushNamed(context, '/');
+      //   } ,
+      // ),
     );
   }
 }

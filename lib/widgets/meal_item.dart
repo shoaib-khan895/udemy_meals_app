@@ -1,27 +1,37 @@
+import 'package:favorite_button/favorite_button.dart';
 import 'package:flutter/material.dart';
 
 import '../screens/meal_detail_screen.dart';
 import '../models/meal.dart';
 
-class MealItem extends StatelessWidget {
+class MealItem extends StatefulWidget {
   final String id;
   final String title;
   final String imageUrl;
   final int duration;
   final Complexity complexity;
   final Affordability affordability;
+  final Function toggleFavorite;
+  final Function isFavorite;
 
+  MealItem({
+    @required this.id,
+    @required this.title,
+    @required this.imageUrl,
+    @required this.affordability,
+    @required this.complexity,
+    @required this.duration,
+    @required this.toggleFavorite,
+    @required this.isFavorite,
+  });
 
-  MealItem(
-      {@required this.id,
-      @required this.title,
-      @required this.imageUrl,
-      @required this.affordability,
-      @required this.complexity,
-      @required this.duration,});
+  @override
+  State<MealItem> createState() => _MealItemState();
+}
 
+class _MealItemState extends State<MealItem> {
   String get complexityText {
-    switch (complexity) {
+    switch (widget.complexity) {
       case Complexity.Simple:
         return 'Simple';
         break;
@@ -37,7 +47,7 @@ class MealItem extends StatelessWidget {
   }
 
   String get affordabilityText {
-    switch (affordability) {
+    switch (widget.affordability) {
       case Affordability.Affordable:
         return 'Affordable';
         break;
@@ -56,7 +66,7 @@ class MealItem extends StatelessWidget {
     Navigator.of(context)
         .pushNamed(
       MealDetailScreen.routeName,
-      arguments: id,
+      arguments: widget.id,
     )
         .then((result) {
       if (result != null) {
@@ -67,6 +77,7 @@ class MealItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mealId = widget.id;
     return InkWell(
       onTap: () => selectMeal(context),
       child: Card(
@@ -80,12 +91,12 @@ class MealItem extends StatelessWidget {
             Stack(
               children: <Widget>[
                 ClipRRect(
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(15),
                     topRight: Radius.circular(15),
                   ),
                   child: Image.asset(
-                    imageUrl,
+                    widget.imageUrl,
                     height: 250,
                     width: double.infinity,
                     fit: BoxFit.cover,
@@ -97,13 +108,13 @@ class MealItem extends StatelessWidget {
                   child: Container(
                     width: 300,
                     color: Colors.black54,
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       vertical: 5,
                       horizontal: 20,
                     ),
                     child: Text(
-                      title,
-                      style: TextStyle(
+                      widget.title,
+                      style: const TextStyle(
                         fontSize: 26,
                         color: Colors.white,
                       ),
@@ -127,7 +138,7 @@ class MealItem extends StatelessWidget {
                       SizedBox(
                         width: 6,
                       ),
-                      Text('$duration min'),
+                      Text('${widget.duration} min'),
                     ],
                   ),
                   Row(
@@ -150,6 +161,18 @@ class MealItem extends StatelessWidget {
                         width: 6,
                       ),
                       Text(affordabilityText),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      FavoriteButton(
+                         iconDisabledColor: Colors.red,
+                        iconSize: 20.0,
+                        valueChanged: (isFavorite) {
+                          print(isFavorite);
+                          widget.toggleFavorite(mealId);
+                          Navigator.pushNamed(context, '/');
+                        },
+                      )
                     ],
                   ),
                 ],
