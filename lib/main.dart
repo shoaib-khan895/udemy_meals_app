@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:udemy_meals_app/screens/favorites_screen.dart';
 
 import './dummy_data.dart';
@@ -12,12 +13,14 @@ import './models/meal.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
+  MyApp({Key key}) : super(key: key);
+
   @override
-  _MyAppState createState() => _MyAppState();
+  MyAppState createState() => MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
-  Map<String, bool> _filters = {
+class MyAppState extends State<MyApp> {
+  Map<String, bool> filters = {
     'gluten': false,
     'lactose': false,
     'vegan': false,
@@ -28,19 +31,19 @@ class _MyAppState extends State<MyApp> {
 
   void _setFilters(Map<String, bool> filterData) {
     setState(() {
-      _filters = filterData;
+      filters = filterData;
 
       availableMeals = DUMMY_MEALS.where((meal) {
-        if (_filters['gluten'] && !meal.isGlutenFree) {
+        if (filters['gluten'] && !meal.isGlutenFree) {
           return false;
         }
-        if (_filters['lactose'] && !meal.isLactoseFree) {
+        if (filters['lactose'] && !meal.isLactoseFree) {
           return false;
         }
-        if (_filters['vegan'] && !meal.isVegan) {
+        if (filters['vegan'] && !meal.isVegan) {
           return false;
         }
-        if (_filters['vegetarian'] && !meal.isVegetarian) {
+        if (filters['vegetarian'] && !meal.isVegetarian) {
           return false;
         }
         return true;
@@ -49,13 +52,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _toggleFavorite(String mealId) {
-    final existingIndex =
-        favoriteMeals.indexWhere((meal) => meal.id == mealId);
+    final existingIndex = favoriteMeals.indexWhere((meal) => meal.id == mealId);
     if (existingIndex >= 0) {
       setState(() {
         favoriteMeals.removeAt(existingIndex);
-      }
-    );
+      });
     } else {
       setState(() {
         favoriteMeals.add(
@@ -76,16 +77,16 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.pink,
         accentColor: Colors.amber,
-        canvasColor: Color.fromRGBO(255, 254, 229, 1),
+        canvasColor: const Color.fromRGBO(255, 254, 229, 1),
         fontFamily: 'Raleway',
         textTheme: ThemeData.light().textTheme.copyWith(
-            bodyText1: TextStyle(
+            bodyText1: const TextStyle(
               color: Color.fromRGBO(20, 51, 51, 1),
             ),
-            bodyText2: TextStyle(
+            bodyText2: const TextStyle(
               color: Color.fromRGBO(20, 51, 51, 1),
             ),
-            subtitle1: TextStyle(
+            subtitle1: const TextStyle(
               fontSize: 20,
               fontFamily: 'RobotoCondensed',
               fontWeight: FontWeight.bold,
@@ -94,12 +95,13 @@ class _MyAppState extends State<MyApp> {
       // home: CategoriesScreen(),
       initialRoute: '/',
       routes: {
-        '/': (ctx) => TabsScreen(favoriteMeals,_toggleFavorite, _isMealFavorite),
-        CategoryMealsScreen.routeName: (ctx) =>
-            CategoryMealsScreen(availableMeals,_toggleFavorite, _isMealFavorite),
+        '/': (ctx) =>
+            TabsScreen(favoriteMeals, _toggleFavorite, _isMealFavorite),
+        CategoryMealsScreen.routeName: (ctx) => CategoryMealsScreen(
+            availableMeals, _toggleFavorite, _isMealFavorite),
         MealDetailScreen.routeName: (ctx) =>
             MealDetailScreen(_toggleFavorite, _isMealFavorite),
-        FiltersScreen.routeName: (ctx) => FiltersScreen(_filters, _setFilters),
+        FiltersScreen.routeName: (ctx) => FiltersScreen(filters, _setFilters),
       },
     );
   }

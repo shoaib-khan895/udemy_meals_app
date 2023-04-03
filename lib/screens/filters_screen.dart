@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widgets/main_drawer.dart';
 
 class FiltersScreen extends StatefulWidget {
   static const routeName = '/filters';
 
-  final Function saveFilters;
   final Map<String, bool> currentFilters;
+  final Function saveFilters;
 
-  FiltersScreen(this.currentFilters, this.saveFilters);
+  FiltersScreen(this.currentFilters, this.saveFilters, {Key key})
+      : super(key: key);
 
   @override
-  _FiltersScreenState createState() => _FiltersScreenState();
+  FiltersScreenState createState() => FiltersScreenState();
 }
 
-class _FiltersScreenState extends State<FiltersScreen> {
-  bool _glutenFree = false;
-  bool _vegetarian = false;
-  bool _vegan = false;
-  bool _lactoseFree = false;
+class FiltersScreenState extends State<FiltersScreen> {
+  bool _glutenFree;
+  bool _vegetarian;
+  bool _vegan;
+  bool _lactoseFree;
 
   @override
   initState() {
@@ -49,18 +51,25 @@ class _FiltersScreenState extends State<FiltersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Your Filters'),
+        title: const Text('Your Filters'),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.save),
-            onPressed: () {
+            icon: const Icon(Icons.save),
+            onPressed: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              prefs.setBool('_glutenFree', _glutenFree);
+              prefs.setBool('_lactoseFree', _lactoseFree);
+              prefs.setBool('_vegan', _vegan);
+              prefs.setBool('_vegetarian', _vegetarian);
+
               final selectedFilters = {
-                'gluten': _glutenFree,
-                'lactose': _lactoseFree,
-                'vegan': _vegan,
-                'vegetarian': _vegetarian,
+                'gluten': prefs.getBool('_glutenFree'),
+                'lactose': prefs.getBool('_lactoseFree'),
+                'vegan': prefs.getBool('_vegan'),
+                'vegetarian': prefs.getBool('_vegetarian'),
               };
               widget.saveFilters(selectedFilters);
+              print(selectedFilters);
             },
           )
         ],
@@ -69,7 +78,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
       body: Column(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Text(
               'Adjust your meal selection.',
               style: Theme.of(context).textTheme.titleMedium,
@@ -103,18 +112,6 @@ class _FiltersScreenState extends State<FiltersScreen> {
                   },
                 ),
                 _buildSwitchListTile(
-                  'Vegetarian',
-                  'Only include vegetarian meals.',
-                  _vegetarian,
-                  (newValue) {
-                    setState(
-                      () {
-                        _vegetarian = newValue;
-                      },
-                    );
-                  },
-                ),
-                _buildSwitchListTile(
                   'Vegan',
                   'Only include vegan meals.',
                   _vegan,
@@ -122,6 +119,18 @@ class _FiltersScreenState extends State<FiltersScreen> {
                     setState(
                       () {
                         _vegan = newValue;
+                      },
+                    );
+                  },
+                ),
+                _buildSwitchListTile(
+                  'Vegetarian',
+                  'Only include vegetarian meals.',
+                  _vegetarian,
+                  (newValue) {
+                    setState(
+                      () {
+                        _vegetarian = newValue;
                       },
                     );
                   },
