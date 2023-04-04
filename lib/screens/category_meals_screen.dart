@@ -7,25 +7,23 @@ class CategoryMealsScreen extends StatefulWidget {
   static const routeName = '/category-meals';
 
   final List<Meal> availableMeals;
+  // List<Meal> displayMeals;
   final Function toggleFavorite;
   final Function isFavorite;
 
-  CategoryMealsScreen(this.availableMeals, this.toggleFavorite, this.isFavorite);
+   CategoryMealsScreen(
+      this.availableMeals, this.toggleFavorite, this.isFavorite,
+      {Key key, })
+      : super(key: key);
 
   @override
-  _CategoryMealsScreenState createState() => _CategoryMealsScreenState();
+  CategoryMealsScreenState createState() => CategoryMealsScreenState();
 }
 
-class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
+class CategoryMealsScreenState extends State<CategoryMealsScreen> {
   String categoryTitle;
   List<Meal> displayedMeals;
   var _loadedInitData = false;
-
-  @override
-  void initState() {
-    // ...
-    super.initState();
-  }
 
   @override
   void didChangeDependencies() {
@@ -34,18 +32,14 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
           ModalRoute.of(context).settings.arguments as Map<String, String>;
       categoryTitle = routeArgs['title'];
       final categoryId = routeArgs['id'];
+      // final category= routeArgs['categories'];
       displayedMeals = widget.availableMeals.where((meal) {
         return meal.categories.contains(categoryId);
       }).toList();
+      // widget.displayMeals=displayedMeals;
       _loadedInitData = true;
     }
     super.didChangeDependencies();
-  }
-
-  void _removeMeal(String mealId) {
-    setState(() {
-      displayedMeals.removeWhere((meal) => meal.id == mealId);
-    });
   }
 
   @override

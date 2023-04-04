@@ -20,14 +20,24 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  Map<String, bool> filters = {
-    'gluten': false,
-    'lactose': false,
-    'vegan': false,
-    'vegetarian': false,
-  };
+  Map<String, bool> filters;
   List<Meal> availableMeals = DUMMY_MEALS;
   List<Meal> favoriteMeals = [];
+
+  getPref() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    bool gluten = pref.getBool('_glutenFree');
+    bool lactose = pref.getBool('_lactoseFree');
+    bool vegan = pref.getBool('_vegan');
+    bool vegetarian = pref.getBool('_vegetarian');
+
+    filters = {
+      'gluten': gluten,
+      'lactose': lactose,
+      'vegan': vegan,
+      'vegetarian': vegetarian,
+    };
+  }
 
   void _setFilters(Map<String, bool> filterData) {
     setState(() {
@@ -72,6 +82,7 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    getPref();
     return MaterialApp(
       title: 'DeliMeals',
       theme: ThemeData(
@@ -98,7 +109,7 @@ class MyAppState extends State<MyApp> {
         '/': (ctx) =>
             TabsScreen(favoriteMeals, _toggleFavorite, _isMealFavorite),
         CategoryMealsScreen.routeName: (ctx) => CategoryMealsScreen(
-            availableMeals, _toggleFavorite, _isMealFavorite),
+            availableMeals, _toggleFavorite, _isMealFavorite,),
         MealDetailScreen.routeName: (ctx) =>
             MealDetailScreen(_toggleFavorite, _isMealFavorite),
         FiltersScreen.routeName: (ctx) => FiltersScreen(filters, _setFilters),
