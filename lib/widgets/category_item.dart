@@ -5,9 +5,10 @@ import '../screens/category_meals_screen.dart';
 class CategoryItem extends StatelessWidget {
   final String id;
   final String title;
-  final Color color;
+  // final Color color;
+  final String image;
 
-  CategoryItem(this.id, this.title, this.color);
+  CategoryItem(this.id, this.title, this.image);
 
   void selectCategory(BuildContext ctx) {
     Navigator.of(ctx).pushNamed(
@@ -32,9 +33,9 @@ class CategoryItem extends StatelessWidget {
             width: 140,
             height: 70,
             decoration: BoxDecoration(
-              color: color,
               borderRadius: BorderRadius.circular(15),
             ),
+            child: Image.asset(image),
           ),
           Text(
             title,

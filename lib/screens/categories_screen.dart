@@ -10,7 +10,7 @@ class CategoriesScreen extends StatelessWidget {
       decoration: const BoxDecoration(
         image: DecorationImage(
           opacity: 0.5,
-          image: AssetImage("assets/images/one.jpeg"),
+          image: AssetImage("assets/images/bgNew.avif"),
           fit: BoxFit.fill,
         ),
       ),
@@ -27,7 +27,7 @@ class CategoriesScreen extends StatelessWidget {
               (catData) => CategoryItem(
                     catData.id,
                     catData.title,
-                    catData.color,
+                    catData.image,
                   ),
             ).toList(),
       ),
