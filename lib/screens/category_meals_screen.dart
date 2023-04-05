@@ -7,14 +7,15 @@ class CategoryMealsScreen extends StatefulWidget {
   static const routeName = '/category-meals';
 
   final List<Meal> availableMeals;
-  // List<Meal> displayMeals;
   final Function toggleFavorite;
   final Function isFavorite;
 
-   CategoryMealsScreen(
-      this.availableMeals, this.toggleFavorite, this.isFavorite,
-      {Key key, })
-      : super(key: key);
+  CategoryMealsScreen(
+    this.availableMeals,
+    this.toggleFavorite,
+    this.isFavorite, {
+    Key key,
+  }) : super(key: key);
 
   @override
   CategoryMealsScreenState createState() => CategoryMealsScreenState();
@@ -32,11 +33,9 @@ class CategoryMealsScreenState extends State<CategoryMealsScreen> {
           ModalRoute.of(context).settings.arguments as Map<String, String>;
       categoryTitle = routeArgs['title'];
       final categoryId = routeArgs['id'];
-      // final category= routeArgs['categories'];
       displayedMeals = widget.availableMeals.where((meal) {
         return meal.categories.contains(categoryId);
       }).toList();
-      // widget.displayMeals=displayedMeals;
       _loadedInitData = true;
     }
     super.didChangeDependencies();
@@ -59,6 +58,7 @@ class CategoryMealsScreenState extends State<CategoryMealsScreen> {
             complexity: displayedMeals[index].complexity,
             toggleFavorite: widget.toggleFavorite,
             isFavorite: widget.isFavorite,
+            isFav: displayedMeals[index].isFav,
           );
         },
         itemCount: displayedMeals.length,

@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:favorite_button/favorite_button.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +15,8 @@ class MealItem extends StatefulWidget {
   final Affordability affordability;
   final Function toggleFavorite;
   final Function isFavorite;
+  final Function reset;
+  bool isFav;
 
   MealItem({
     @required this.id,
@@ -23,6 +27,7 @@ class MealItem extends StatefulWidget {
     @required this.duration,
     @required this.toggleFavorite,
     @required this.isFavorite,
+    @required this.isFav, this.reset,
   });
 
   @override
@@ -85,7 +90,7 @@ class _MealItemState extends State<MealItem> {
           borderRadius: BorderRadius.circular(15),
         ),
         elevation: 4,
-        margin: EdgeInsets.all(10),
+        margin: EdgeInsets.all(5),
         child: Column(
           children: <Widget>[
             Stack(
@@ -122,20 +127,36 @@ class _MealItemState extends State<MealItem> {
                       overflow: TextOverflow.fade,
                     ),
                   ),
-                )
+                ),
+                Positioned(
+                  right: 5,
+                  child: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        widget.toggleFavorite(mealId);
+                        widget.reset();
+                      });
+                    },
+                    icon: Icon(
+                      Icons.favorite,
+                      color: (widget.isFav) ? Colors.red : Colors.grey,
+                      size: 30,
+                    ),
+                  ),
+                ),
               ],
             ),
             Padding(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.all(10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      Icon(
+                      const Icon(
                         Icons.schedule,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 6,
                       ),
                       Text('${widget.duration} min'),
@@ -143,10 +164,10 @@ class _MealItemState extends State<MealItem> {
                   ),
                   Row(
                     children: <Widget>[
-                      Icon(
+                      const Icon(
                         Icons.work,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 6,
                       ),
                       Text(complexityText),
@@ -154,25 +175,16 @@ class _MealItemState extends State<MealItem> {
                   ),
                   Row(
                     children: <Widget>[
-                      Icon(
+                      const Icon(
                         Icons.attach_money,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 6,
                       ),
                       Text(affordabilityText),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
-                      FavoriteButton(
-                         iconDisabledColor: Colors.red,
-                        iconSize: 20.0,
-                        valueChanged: (isFavorite) {
-                          print(isFavorite);
-                          widget.toggleFavorite(mealId);
-                          Navigator.pushNamed(context, '/');
-                        },
-                      )
                     ],
                   ),
                 ],

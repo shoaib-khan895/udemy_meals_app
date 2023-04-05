@@ -26,6 +26,12 @@ class MyAppState extends State<MyApp> {
 
   getPref() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
+    // if (pref.getBool('_glutenFree') == null) {
+    //   pref.setBool('_lactoseFree', false);
+    //   pref.setBool('_vegan', false);
+    //   pref.setBool('_vegetarian', false);
+    //   pref.setBool('_glutenFree', false);
+    // }
     bool gluten = pref.getBool('_glutenFree');
     bool lactose = pref.getBool('_lactoseFree');
     bool vegan = pref.getBool('_vegan');
@@ -66,12 +72,14 @@ class MyAppState extends State<MyApp> {
     if (existingIndex >= 0) {
       setState(() {
         favoriteMeals.removeAt(existingIndex);
+         //favoriteMeals[int.parse(mealId)].isFav = false;
+        availableMeals[int.parse(mealId)].isFav = false;
       });
     } else {
       setState(() {
-        favoriteMeals.add(
-          DUMMY_MEALS.firstWhere((meal) => meal.id == mealId),
-        );
+        favoriteMeals.add(DUMMY_MEALS.firstWhere((meal) => meal.id == mealId));
+        // favoriteMeals[int.parse(mealId)].isFav = false;
+        availableMeals[int.parse(mealId)].isFav = true;
       });
     }
   }
@@ -109,7 +117,10 @@ class MyAppState extends State<MyApp> {
         '/': (ctx) =>
             TabsScreen(favoriteMeals, _toggleFavorite, _isMealFavorite),
         CategoryMealsScreen.routeName: (ctx) => CategoryMealsScreen(
-            availableMeals, _toggleFavorite, _isMealFavorite,),
+              availableMeals,
+              _toggleFavorite,
+              _isMealFavorite,
+            ),
         MealDetailScreen.routeName: (ctx) =>
             MealDetailScreen(_toggleFavorite, _isMealFavorite),
         FiltersScreen.routeName: (ctx) => FiltersScreen(filters, _setFilters),

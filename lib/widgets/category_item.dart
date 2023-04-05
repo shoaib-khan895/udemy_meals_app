@@ -5,7 +5,6 @@ import '../screens/category_meals_screen.dart';
 class CategoryItem extends StatelessWidget {
   final String id;
   final String title;
-  // final Color color;
   final String image;
 
   CategoryItem(this.id, this.title, this.image);
@@ -25,18 +24,19 @@ class CategoryItem extends StatelessWidget {
     return InkWell(
       onTap: () => selectCategory(context),
       splashColor: Theme.of(context).primaryColor,
-      borderRadius: BorderRadius.circular(15),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Container(
-            width: 140,
-            height: 70,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Image.asset(image),
-          ),
+        Container(
+        width: 100.0,
+        height: 70.0,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              fit: BoxFit.cover, image: AssetImage(image)),
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          color: Colors.redAccent,
+        ),
+      ),
           Text(
             title,
             style: TextStyle(
