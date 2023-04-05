@@ -20,8 +20,14 @@ class _TabsScreenState extends State<TabsScreen> {
   List<Map<String, Object>> _pages;
   int _selectedPageIndex = 0;
 
+  void _selectPage(int index) {
+    setState(() {
+      _selectedPageIndex = index;
+    });
+  }
+
   @override
-  void initState() {
+  Widget build(BuildContext context) {
     _pages = [
       {
         'page': CategoriesScreen(),
@@ -32,17 +38,6 @@ class _TabsScreenState extends State<TabsScreen> {
         'title': 'Your Favorite',
       },
     ];
-    super.initState();
-  }
-
-  void _selectPage(int index) {
-    setState(() {
-      _selectedPageIndex = index;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(_pages[_selectedPageIndex]['title']),
