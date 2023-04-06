@@ -10,12 +10,9 @@ class CategoryMealsScreen extends StatefulWidget {
   final Function toggleFavorite;
   final Function isFavorite;
 
-  CategoryMealsScreen(
-    this.availableMeals,
-    this.toggleFavorite,
-    this.isFavorite, {
-    Key key,
-  }) : super(key: key);
+  CategoryMealsScreen(this.availableMeals, this.toggleFavorite, this.isFavorite,
+      {Key key})
+      : super(key: key);
 
   @override
   CategoryMealsScreenState createState() => CategoryMealsScreenState();
@@ -23,6 +20,7 @@ class CategoryMealsScreen extends StatefulWidget {
 
 class CategoryMealsScreenState extends State<CategoryMealsScreen> {
   String categoryTitle;
+  String catId;
   List<Meal> displayedMeals;
   var _loadedInitData = false;
 
@@ -33,6 +31,7 @@ class CategoryMealsScreenState extends State<CategoryMealsScreen> {
           ModalRoute.of(context).settings.arguments as Map<String, String>;
       categoryTitle = routeArgs['title'];
       final categoryId = routeArgs['id'];
+      catId = categoryId;
       displayedMeals = widget.availableMeals.where((meal) {
         return meal.categories.contains(categoryId);
       }).toList();
@@ -59,10 +58,16 @@ class CategoryMealsScreenState extends State<CategoryMealsScreen> {
             toggleFavorite: widget.toggleFavorite,
             isFavorite: widget.isFavorite,
             isFav: displayedMeals[index].isFav,
+            catId: catId,
+            reset: removeItem,
           );
         },
         itemCount: displayedMeals.length,
       ),
     );
+  }
+
+  removeItem() {
+    setState(() {});
   }
 }

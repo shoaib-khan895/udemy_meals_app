@@ -16,6 +16,7 @@ class MealItem extends StatefulWidget {
   final Function isFavorite;
   final Function reset;
   bool isFav;
+  String catId;
 
   MealItem({
     @required this.id,
@@ -26,7 +27,7 @@ class MealItem extends StatefulWidget {
     @required this.duration,
     @required this.toggleFavorite,
     @required this.isFavorite,
-    @required this.isFav, this.reset,
+    @required this.isFav, this.reset, this.catId,
   });
 
   @override
@@ -70,7 +71,10 @@ class _MealItemState extends State<MealItem> {
     Navigator.of(context)
         .pushNamed(
       MealDetailScreen.routeName,
-      arguments: widget.id,
+      arguments: {
+        'id': widget.id,
+        'title': widget.catId,
+      },
     )
         .then((result) {
       if (result != null) {

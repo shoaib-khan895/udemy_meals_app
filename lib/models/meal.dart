@@ -17,8 +17,8 @@ class Meal {
   final List<String> categories;
   final String title;
   final String imageUrl;
-  final List<String> ingredients;
-  final List<String> steps;
+  final String ingredients;
+  final String steps;
   final int duration;
   final Complexity complexity;
   final Affordability affordability;
@@ -26,8 +26,7 @@ class Meal {
   final bool isLactoseFree;
   final bool isVegan;
   final bool isVegetarian;
-
-    bool isFav;
+  bool isFav;
 
    Meal({
     @required this.id,

@@ -10,8 +10,11 @@ class MealDetailScreen extends StatefulWidget {
 
   final Function toggleFavorite;
   final Function isFavorite;
-
-  MealDetailScreen(this.toggleFavorite, this.isFavorite, {Key key})
+  List<Meal> favMeals;
+  List<Meal> availableMeals;
+  int pageCount = 0;
+  MealDetailScreen(this.toggleFavorite, this.isFavorite,
+      {Key key, @required this.favMeals, this.availableMeals})
       : super(key: key);
 
   @override
@@ -19,7 +22,6 @@ class MealDetailScreen extends StatefulWidget {
 }
 
 class _MealDetailScreenState extends State<MealDetailScreen> {
-
   Widget buildSectionTitle(BuildContext context, String text) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
@@ -30,32 +32,64 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
     );
   }
 
-  Widget buildContainer(Widget child) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      margin: EdgeInsets.all(10),
-      padding: EdgeInsets.all(10),
-      height: 150,
-      width: 300,
-      child: child,
-    );
-  }
+  // Widget buildContainer(Widget child) {
+  //   return Container(
+  //     decoration: BoxDecoration(
+  //       color: Colors.white,
+  //       border: Border.all(color: Colors.grey),
+  //       borderRadius: BorderRadius.circular(10),
+  //     ),
+  //     margin: EdgeInsets.all(10),
+  //     padding: EdgeInsets.all(10),
+  //     height: 150,
+  //     width: 300,
+  //     child: child,
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
-    final mealId = ModalRoute.of(context).settings.arguments as String;
-    final selectedMeal = DUMMY_MEALS.firstWhere((meal) => meal.id == mealId);
+
+      int color=0;
+    List<Meal> displayMeals;
+    final routeArgs =
+        ModalRoute.of(context).settings.arguments as Map<String, String>;
+    final mealId = routeArgs['id'];
+    final categoryId = routeArgs['title'];
+    print(categoryId);
+    if (categoryId != null) {
+      displayMeals = widget.availableMeals.where((meal) {
+        return meal.categories.contains(categoryId);
+      }).toList();
+    } else {
+      displayMeals = widget.favMeals;
+    }
+
     final PageController controller = PageController();
-    return PageView.builder(
+    if (displayMeals.isEmpty == true) {
+      Navigator.pop(context);
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('No Meals to show'),
+        ),
+        body: Center(
+          child: Text('Please add meals'),
+        ),
+      );
+    } else {
+      return PageView.builder(
+        onPageChanged: (count) {
+          setState(() {
+            print(count);
+            widget.pageCount = count;
+            color=count;
+          });
+        },
         controller: controller,
         itemBuilder: (BuildContext context, int index) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(selectedMeal.title),
+              title: Text(displayMeals[index].title),
             ),
             body: SingleChildScrollView(
               child: Column(
@@ -65,7 +99,7 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                       height: 300,
                       width: double.infinity,
                       child: Image.asset(
-                        selectedMeal.imageUrl,
+                        displayMeals[index].imageUrl,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -74,56 +108,75 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                       child: IconButton(
                         onPressed: () {
                           setState(() {
-                            widget.toggleFavorite(mealId);
+                            widget.toggleFavorite(displayMeals[widget.pageCount].id);
                           });
                         },
                         icon: Icon(
                           Icons.favorite,
                           color:
-                              (selectedMeal.isFav) ? Colors.red : Colors.white,
+                              (displayMeals[index].isFav) ? Colors.red : Colors.white,
                           size: 50,
                         ),
                       ),
                     )
                   ]),
                   buildSectionTitle(context, 'Ingredients'),
-                  buildContainer(
-                    ListView.builder(
-                      itemBuilder: (ctx, index) => Card(
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    margin: EdgeInsets.all(10),
+                    padding: EdgeInsets.all(10),
+                    height: 150,
+                    width: 300,
+                    child: ListView(children: [
+                      Card(
                         color: Theme.of(context).primaryColor,
                         child: Padding(
                             padding: const EdgeInsets.symmetric(
                               vertical: 5,
                               horizontal: 10,
                             ),
-                            child: Text(selectedMeal.ingredients[index])),
+                            child: Text(displayMeals[index].ingredients)),
                       ),
-                      itemCount: selectedMeal.ingredients.length,
-                    ),
+                    ]),
                   ),
                   buildSectionTitle(context, 'Steps'),
-                  buildContainer(
-                    ListView.builder(
-                      itemBuilder: (ctx, index) => Column(
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    margin: EdgeInsets.all(10),
+                    padding: EdgeInsets.all(10),
+                    height: 150,
+                    width: 300,
+                    child: ListView(children: [
+                      Column(
                         children: [
                           ListTile(
                             leading: CircleAvatar(
-                              child: Text('# ${(index + 1)}'),
+                              child: Text('#'),
                             ),
                             title: Text(
-                              selectedMeal.steps[index],
+                              displayMeals[index].steps,
                             ),
                           ),
                           Divider()
                         ],
                       ),
-                      itemCount: selectedMeal.steps.length,
-                    ),
-                  ),
+                    ]),
+                  )
                 ],
               ),
             ),
           );
-        });
+        },
+        itemCount: displayMeals.length,
+      );
+    }
   }
 }
