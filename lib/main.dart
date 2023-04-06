@@ -26,12 +26,12 @@ class MyAppState extends State<MyApp> {
 
   getPref() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    // if (pref.getBool('_glutenFree') == null) {
-    //   pref.setBool('_lactoseFree', false);
-    //   pref.setBool('_vegan', false);
-    //   pref.setBool('_vegetarian', false);
-    //   pref.setBool('_glutenFree', false);
-    // }
+    if (pref.getBool('_glutenFree') == null) {
+      pref.setBool('_lactoseFree', false);
+      pref.setBool('_vegan', false);
+      pref.setBool('_vegetarian', false);
+      pref.setBool('_glutenFree', false);
+    }
     bool gluten = pref.getBool('_glutenFree');
     bool lactose = pref.getBool('_lactoseFree');
     bool vegan = pref.getBool('_vegan');

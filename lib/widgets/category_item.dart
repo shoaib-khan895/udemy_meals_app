@@ -25,7 +25,7 @@ class CategoryItem extends StatelessWidget {
       onTap: () => selectCategory(context),
       splashColor: Theme.of(context).primaryColor,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
         Container(
         width: 100.0,

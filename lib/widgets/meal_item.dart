@@ -1,6 +1,5 @@
-import 'dart:ffi';
 
-import 'package:favorite_button/favorite_button.dart';
+
 import 'package:flutter/material.dart';
 
 import '../screens/meal_detail_screen.dart';

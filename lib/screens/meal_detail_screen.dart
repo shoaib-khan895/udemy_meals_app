@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:favorite_button/favorite_button.dart';
 import 'package:flutter/material.dart';
 
 import '../dummy_data.dart';
