@@ -50,7 +50,6 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
   @override
   Widget build(BuildContext context) {
 
-      int color=0;
     List<Meal> displayMeals;
     final routeArgs =
         ModalRoute.of(context).settings.arguments as Map<String, String>;
@@ -65,9 +64,8 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
       displayMeals = widget.favMeals;
     }
 
-    final PageController controller = PageController();
+    final PageController controller = PageController(initialPage:int.parse(mealId) );
     if (displayMeals.isEmpty == true) {
-      Navigator.pop(context);
       return Scaffold(
         appBar: AppBar(
           title: Text('No Meals to show'),
@@ -76,13 +74,14 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
           child: Text('Please add meals'),
         ),
       );
+     // Navigator.pop(context);
+
     } else {
       return PageView.builder(
         onPageChanged: (count) {
           setState(() {
             print(count);
             widget.pageCount = count;
-            color=count;
           });
         },
         controller: controller,
