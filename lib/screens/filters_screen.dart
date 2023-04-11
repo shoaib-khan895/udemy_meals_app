@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../cubits/cubit_filter.dart';
 import '../widgets/main_drawer.dart';
 
 class FiltersScreen extends StatefulWidget {
   static const routeName = '/filters';
 
-  final Map<String, bool> currentFilters;
-  final Function saveFilters;
+  // Function saveFilters;
 
-  FiltersScreen(this.currentFilters, this.saveFilters, {Key key})
-      : super(key: key);
+  FiltersScreen({Key key}) : super(key: key);
 
   @override
   FiltersScreenState createState() => FiltersScreenState();
@@ -21,13 +21,17 @@ class FiltersScreenState extends State<FiltersScreen> {
   bool _vegetarian;
   bool _vegan;
   bool _lactoseFree;
-
+  // SharedPreferences prefs;
+//   () async {
+//   prefs = await SharedPreferences.getInstance();
+// };
   @override
   initState() {
-    _glutenFree = widget.currentFilters['gluten'];
-    _lactoseFree = widget.currentFilters['lactose'];
-    _vegetarian = widget.currentFilters['vegetarian'];
-    _vegan = widget.currentFilters['vegan'];
+    Map<String, bool> currentFilters = context.read<CubitFilter>().filters;
+    _glutenFree = currentFilters['gluten'];
+    _lactoseFree = currentFilters['lactose'];
+    _vegetarian = currentFilters['vegetarian'];
+    _vegan = currentFilters['vegan'];
     super.initState();
   }
 
@@ -55,21 +59,21 @@ class FiltersScreenState extends State<FiltersScreen> {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.save),
-            onPressed: () async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              prefs.setBool('_glutenFree', _glutenFree);
-              prefs.setBool('_lactoseFree', _lactoseFree);
-              prefs.setBool('_vegan', _vegan);
-              prefs.setBool('_vegetarian', _vegetarian);
-
-              final selectedFilters = {
-                'gluten': prefs.getBool('_glutenFree'),
-                'lactose': prefs.getBool('_lactoseFree'),
-                'vegan': prefs.getBool('_vegan'),
-                'vegetarian': prefs.getBool('_vegetarian'),
+            onPressed: () {
+              () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setBool('_glutenFree', _glutenFree);
+                prefs.setBool('_lactoseFree', _lactoseFree);
+                prefs.setBool('_vegan', _vegan);
+                prefs.setBool('_vegetarian', _vegetarian);
               };
-              widget.saveFilters(selectedFilters);
-              print(selectedFilters);
+              Map<String, bool> selectedFilters = {
+                'gluten': _glutenFree,
+                'lactose': _lactoseFree,
+                'vegan': _vegan,
+                'vegetarian': _vegetarian,
+              };
+              context.read<CubitFilter>().setFilters(selectedFilters);
             },
           )
         ],
@@ -143,3 +147,4 @@ class FiltersScreenState extends State<FiltersScreen> {
     );
   }
 }
+// context.read<CubitFilter>().setFilters(selectedFilters);

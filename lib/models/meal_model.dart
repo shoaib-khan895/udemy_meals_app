@@ -12,7 +12,7 @@ enum Affordability {
   Luxurious,
 }
 
-class Meal {
+class MealModel {
   final String id;
   final List<String> categories;
   final String title;
@@ -28,7 +28,7 @@ class Meal {
   final bool isVegetarian;
   bool isFav;
 
-   Meal({
+   MealModel({
     @required this.id,
     @required this.categories,
     @required this.title,

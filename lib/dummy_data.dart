@@ -1,63 +1,61 @@
-import 'package:flutter/material.dart';
-
-import './models/category.dart';
-import 'models/meal.dart';
+import './models/category_model.dart';
+import 'models/meal_model.dart';
 
 const DUMMY_CATEGORIES = [
-  Category(
+  CategoryModel(
     id: 'c1',
     title: 'Italian',
     image: 'assets/images/img1.jpeg',
   ),
-  Category(
+  CategoryModel(
     id: 'c2',
     title: 'Quick & Easy',
     image: 'assets/images/img2.jpg',
   ),
-  Category(
+  CategoryModel(
     id: 'c3',
     title: 'Hamburgers',
     image: 'assets/images/img3.jpg',
   ),
-  Category(
+  CategoryModel(
     id: 'c4',
     title: 'German',
     image: 'assets/images/img4.jpg',
   ),
-  Category(
+  CategoryModel(
     id: 'c5',
     title: 'Light & Lovely',
     image: 'assets/images/img5.jpg',
   ),
-  Category(
+  CategoryModel(
     id: 'c6',
     title: 'Exotic',
     image: 'assets/images/img6.jpg',
   ),
-  Category(
+  CategoryModel(
     id: 'c7',
     title: 'Breakfast',
     image: 'assets/images/img7.jpg',
   ),
-  Category(
+  CategoryModel(
     id: 'c8',
     title: 'Asian',
     image: 'assets/images/img8.jpg',
   ),
-  Category(
+  CategoryModel(
     id: 'c9',
     title: 'French',
     image: 'assets/images/img9.jpg',
   ),
-  Category(
+  CategoryModel(
     id: 'c10',
     title: 'Summer',
     image: 'assets/images/img10.jpg',
   ),
 ];
 
-List<Meal> DUMMY_MEALS = [
-  Meal(
+List<MealModel> DUMMY_MEALS = [
+  MealModel(
       id: '0',
       categories: [
         'c1',
@@ -77,7 +75,7 @@ List<Meal> DUMMY_MEALS = [
       isVegetarian: true,
       isLactoseFree: true,
       isFav: false),
-  Meal(
+  MealModel(
       id: '1',
       categories: [
         'c2',
@@ -96,7 +94,7 @@ List<Meal> DUMMY_MEALS = [
       isVegetarian: false,
       isLactoseFree: false,
       isFav: false),
-  Meal(
+  MealModel(
       id: '2',
       categories: [
         'c2',
@@ -116,7 +114,7 @@ List<Meal> DUMMY_MEALS = [
       isVegetarian: false,
       isLactoseFree: true,
       isFav: false),
-  Meal(
+  MealModel(
       id: '3',
       categories: [
         'c4',
@@ -135,7 +133,7 @@ List<Meal> DUMMY_MEALS = [
       isVegetarian: false,
       isLactoseFree: false,
       isFav: false),
-  Meal(
+  MealModel(
       id: '4',
       categories: [
         'c2'
@@ -156,7 +154,7 @@ List<Meal> DUMMY_MEALS = [
       isVegetarian: true,
       isLactoseFree: true,
       isFav: false),
-  Meal(
+  MealModel(
       id: '5',
       categories: [
         'c6',
@@ -176,7 +174,7 @@ List<Meal> DUMMY_MEALS = [
       isVegetarian: true,
       isLactoseFree: false,
       isFav: false),
-  Meal(
+  MealModel(
       id: '6',
       categories: [
         'c7',
@@ -195,7 +193,7 @@ List<Meal> DUMMY_MEALS = [
       isVegetarian: true,
       isLactoseFree: false,
       isFav: false),
-  Meal(
+  MealModel(
       id: '7',
       categories: [
         'c8',
@@ -214,7 +212,7 @@ List<Meal> DUMMY_MEALS = [
       isVegetarian: false,
       isLactoseFree: true,
       isFav: false),
-  Meal(
+  MealModel(
       id: '8',
       categories: [
         'c9',
@@ -233,7 +231,7 @@ List<Meal> DUMMY_MEALS = [
       isVegetarian: true,
       isLactoseFree: false,
       isFav: false),
-  Meal(
+  MealModel(
       id: '9',
       categories: [
         'c2',

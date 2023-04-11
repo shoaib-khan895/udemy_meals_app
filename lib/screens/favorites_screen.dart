@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../models/meal.dart';
+import '../models/meal_model.dart';
 import '../widgets/meal_item.dart';
 
 class FavoritesScreen extends StatefulWidget {
-  List<Meal> favoriteMeals;
+  List<MealModel> favoriteMeals;
   final Function toggleFavorite;
   final Function isFavorite;
 

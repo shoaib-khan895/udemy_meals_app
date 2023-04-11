@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../cubits/cubit_filter.dart';
 import '../widgets/meal_item.dart';
-import '../models/meal.dart';
+import '../models/meal_model.dart';
 
 class CategoryMealsScreen extends StatefulWidget {
   static const routeName = '/category-meals';
 
-  final List<Meal> availableMeals;
+  // final List<MealModel> availableMeals;
   final Function toggleFavorite;
   final Function isFavorite;
 
-  CategoryMealsScreen(this.availableMeals, this.toggleFavorite, this.isFavorite,
+  CategoryMealsScreen(this.toggleFavorite, this.isFavorite,
       {Key key})
       : super(key: key);
 
@@ -21,7 +22,7 @@ class CategoryMealsScreen extends StatefulWidget {
 class CategoryMealsScreenState extends State<CategoryMealsScreen> {
   String categoryTitle;
   String catId;
-  List<Meal> displayedMeals;
+  List<MealModel> displayedMeals;
   var _loadedInitData = false;
 
   @override
@@ -32,17 +33,16 @@ class CategoryMealsScreenState extends State<CategoryMealsScreen> {
       categoryTitle = routeArgs['title'];
       final categoryId = routeArgs['id'];
       catId = categoryId;
-      displayedMeals = widget.availableMeals.where((meal) {
+      displayedMeals = context.read<CubitFilter>().state.where((meal) {
         return meal.categories.contains(categoryId);
       }).toList();
       _loadedInitData = true;
     }
     super.didChangeDependencies();
   }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  Scaffold(
       appBar: AppBar(
         title: Text(categoryTitle),
       ),

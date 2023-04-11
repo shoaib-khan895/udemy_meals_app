@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:udemy_meals_app/screens/favorites_screen.dart';
 
@@ -8,9 +9,36 @@ import './screens/meal_detail_screen.dart';
 import './screens/category_meals_screen.dart';
 import './screens/filters_screen.dart';
 import './screens/categories_screen.dart';
-import './models/meal.dart';
+import './models/meal_model.dart';
+import 'cubits/category_cubit.dart';
+import 'cubits/cubit_favorites.dart';
+import 'cubits/cubit_filter.dart';
+import 'cubits/meal_cubit.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(Home());
+}
+
+class Home extends MaterialApp {
+  Home({Key key}) : super(key: key, home: CalculatorView());
+}
+
+class CalculatorView extends StatelessWidget {
+  CalculatorView({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (BuildContext context) => CategoryCubit()),
+        BlocProvider(create: (BuildContext context) => MealCubit()),
+        BlocProvider(create: (BuildContext context) => CubitFilter()),
+        BlocProvider(create: (BuildContext context) => CubitFavorite())
+      ],
+      child: MyApp(),
+    );
+  }
+}
 
 class MyApp extends StatefulWidget {
   MyApp({Key key}) : super(key: key);
@@ -20,55 +48,55 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  Map<String, bool> filters;
-  List<Meal> availableMeals = DUMMY_MEALS;
-  List<Meal> favoriteMeals = [];
-  List<Meal> viewPageMeals;
+  // Map<String, bool> filters;
+  // List<MealModel> availableMeals = DUMMY_MEALS;
+  List<MealModel> favoriteMeals = [];
+  List<MealModel> viewPageMeals;
 
-  getPref() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    if (pref.getBool('_glutenFree') == null) {
-      pref.setBool('_lactoseFree', false);
-      pref.setBool('_vegan', false);
-      pref.setBool('_vegetarian', false);
-      pref.setBool('_glutenFree', false);
-    }
-    bool gluten = pref.getBool('_glutenFree');
-    bool lactose = pref.getBool('_lactoseFree');
-    bool vegan = pref.getBool('_vegan');
-    bool vegetarian = pref.getBool('_vegetarian');
+  // getPref() async {
+  //   SharedPreferences pref = await SharedPreferences.getInstance();
+  //   if (pref.getBool('_glutenFree') == null) {
+  //     pref.setBool('_lactoseFree', false);
+  //     pref.setBool('_vegan', false);
+  //     pref.setBool('_vegetarian', false);
+  //     pref.setBool('_glutenFree', false);
+  //   }
+  //   bool gluten = pref.getBool('_glutenFree');
+  //   bool lactose = pref.getBool('_lactoseFree');
+  //   bool vegan = pref.getBool('_vegan');
+  //   bool vegetarian = pref.getBool('_vegetarian');
+  //
+  //   filters = {
+  //     'gluten': gluten,
+  //     'lactose': lactose,
+  //     'vegan': vegan,
+  //     'vegetarian': vegetarian,
+  //   };
+  // }
 
-    filters = {
-      'gluten': gluten,
-      'lactose': lactose,
-      'vegan': vegan,
-      'vegetarian': vegetarian,
-    };
-  }
-
-  void _setFilters(Map<String, bool> filterData) {
-    setState(() {
-      filters = filterData;
-
-      availableMeals = DUMMY_MEALS.where((meal) {
-        if (filters['gluten'] && !meal.isGlutenFree) {
-          return false;
-        }
-        if (filters['lactose'] && !meal.isLactoseFree) {
-          return false;
-        }
-        if (filters['vegan'] && !meal.isVegan) {
-          return false;
-        }
-        if (filters['vegetarian'] && !meal.isVegetarian) {
-          return false;
-        }
-        return true;
-      }).toList();
-      setState(() {
-      });
-    });
-  }
+  // void _setFilters(Map<String, bool> filterData) {
+  //   setState(() {
+  //     filters = filterData;
+  //
+  //     availableMeals = DUMMY_MEALS.where((meal) {
+  //       if (filters['gluten'] && !meal.isGlutenFree) {
+  //         return false;
+  //       }
+  //       if (filters['lactose'] && !meal.isLactoseFree) {
+  //         return false;
+  //       }
+  //       if (filters['vegan'] && !meal.isVegan) {
+  //         return false;
+  //       }
+  //       if (filters['vegetarian'] && !meal.isVegetarian) {
+  //         return false;
+  //       }
+  //       return true;
+  //     }).toList();
+  //     setState(() {
+  //     });
+  //   });
+  // }
 
   void _toggleFavorite(String mealId) {
     final existingIndex = favoriteMeals.indexWhere((meal) => meal.id == mealId);
@@ -93,7 +121,7 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    getPref();
+    context.read<CubitFilter>().getPref();
     return MaterialApp(
       title: 'DeliMeals',
       theme: ThemeData(
@@ -114,13 +142,14 @@ class MyAppState extends State<MyApp> {
               fontWeight: FontWeight.bold,
             )),
       ),
-      // home: CategoriesScreen(),
       initialRoute: '/',
       routes: {
-        '/': (ctx) =>
-            TabsScreen(favoriteMeals, _toggleFavorite, _isMealFavorite),
+        '/': (ctx) => TabsScreen(
+              favoriteMeals,
+              _toggleFavorite,
+              _isMealFavorite,
+            ),
         CategoryMealsScreen.routeName: (ctx) => CategoryMealsScreen(
-              availableMeals,
               _toggleFavorite,
               _isMealFavorite,
             ),
@@ -128,9 +157,8 @@ class MyAppState extends State<MyApp> {
               _toggleFavorite,
               _isMealFavorite,
               favMeals: favoriteMeals,
-              availableMeals: availableMeals,
             ),
-        FiltersScreen.routeName: (ctx) => FiltersScreen(filters, _setFilters),
+        FiltersScreen.routeName: (ctx) => FiltersScreen(),
       },
     );
   }

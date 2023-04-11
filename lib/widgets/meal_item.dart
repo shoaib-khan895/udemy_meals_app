@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 
 import '../screens/meal_detail_screen.dart';
-import '../models/meal.dart';
+import '../models/meal_model.dart';
 
 class MealItem extends StatefulWidget {
   final String id;

@@ -1,20 +1,21 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../cubits/cubit_filter.dart';
 import '../dummy_data.dart';
-import '../models/meal.dart';
+import '../models/meal_model.dart';
 
 class MealDetailScreen extends StatefulWidget {
   static const routeName = '/meal-detail';
 
   final Function toggleFavorite;
   final Function isFavorite;
-  List<Meal> favMeals;
-  List<Meal> availableMeals;
+  List<MealModel> favMeals;
   int pageCount = 0;
   MealDetailScreen(this.toggleFavorite, this.isFavorite,
-      {Key key, @required this.favMeals, this.availableMeals})
+      {Key key, @required this.favMeals,})
       : super(key: key);
 
   @override
@@ -31,33 +32,16 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
       ),
     );
   }
-
-  // Widget buildContainer(Widget child) {
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //       color: Colors.white,
-  //       border: Border.all(color: Colors.grey),
-  //       borderRadius: BorderRadius.circular(10),
-  //     ),
-  //     margin: EdgeInsets.all(10),
-  //     padding: EdgeInsets.all(10),
-  //     height: 150,
-  //     width: 300,
-  //     child: child,
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
-
-    List<Meal> displayMeals;
+    List<MealModel> displayMeals;
     final routeArgs =
         ModalRoute.of(context).settings.arguments as Map<String, String>;
     final mealId = routeArgs['id'];
     final categoryId = routeArgs['title'];
     print(categoryId);
     if (categoryId != null) {
-      displayMeals = widget.availableMeals.where((meal) {
+      displayMeals = context.read<CubitFilter>().state.where((meal) {
         return meal.categories.contains(categoryId);
       }).toList();
     } else {
