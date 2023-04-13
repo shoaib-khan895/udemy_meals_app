@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../cubits/cubit_filter.dart';
+import '../cubits/cubit_main.dart';
 import '../widgets/main_drawer.dart';
 
 class FiltersScreen extends StatefulWidget {
@@ -27,7 +27,7 @@ class FiltersScreenState extends State<FiltersScreen> {
 // };
   @override
   initState() {
-    Map<String, bool> currentFilters = context.read<CubitFilter>().filters;
+    Map<String, bool> currentFilters = context.read<CubitMain>().filters;
     _glutenFree = currentFilters['gluten'];
     _lactoseFree = currentFilters['lactose'];
     _vegetarian = currentFilters['vegetarian'];
@@ -73,7 +73,7 @@ class FiltersScreenState extends State<FiltersScreen> {
                 'vegan': _vegan,
                 'vegetarian': _vegetarian,
               };
-              context.read<CubitFilter>().setFilters(selectedFilters);
+              context.read<CubitMain>().setFilters(selectedFilters);
             },
           )
         ],

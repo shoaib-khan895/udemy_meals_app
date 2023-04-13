@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../cubits/cubit_filter.dart';
+import '../cubits/cubit_main.dart';
 import '../widgets/meal_item.dart';
 import '../models/meal_model.dart';
 
 class CategoryMealsScreen extends StatefulWidget {
   static const routeName = '/category-meals';
 
-  // final List<MealModel> availableMeals;
-  final Function toggleFavorite;
-  final Function isFavorite;
+   const CategoryMealsScreen({Key key}) : super(key: key);
 
-  CategoryMealsScreen(this.toggleFavorite, this.isFavorite,
-      {Key key})
-      : super(key: key);
 
   @override
   CategoryMealsScreenState createState() => CategoryMealsScreenState();
@@ -27,13 +22,14 @@ class CategoryMealsScreenState extends State<CategoryMealsScreen> {
 
   @override
   void didChangeDependencies() {
+
     if (!_loadedInitData) {
       final routeArgs =
           ModalRoute.of(context).settings.arguments as Map<String, String>;
       categoryTitle = routeArgs['title'];
       final categoryId = routeArgs['id'];
       catId = categoryId;
-      displayedMeals = context.read<CubitFilter>().state.where((meal) {
+      displayedMeals = context.watch<CubitMain>().availableMeals.where((meal) {
         return meal.categories.contains(categoryId);
       }).toList();
       _loadedInitData = true;
@@ -55,8 +51,6 @@ class CategoryMealsScreenState extends State<CategoryMealsScreen> {
             duration: displayedMeals[index].duration,
             affordability: displayedMeals[index].affordability,
             complexity: displayedMeals[index].complexity,
-            toggleFavorite: widget.toggleFavorite,
-            isFavorite: widget.isFavorite,
             isFav: displayedMeals[index].isFav,
             catId: catId,
             reset: removeItem,

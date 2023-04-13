@@ -3,12 +3,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../dummy_data.dart';
 import '../models/meal_model.dart';
 
-List<MealModel> availableMeals = DUMMY_MEALS;
+class CubitMain extends Cubit<List<MealModel>> {
+  CubitMain() : super(DUMMY_MEALS);
 
-class CubitFilter extends Cubit<List<MealModel>> {
-  CubitFilter() : super(availableMeals);
+  List<MealModel> availableMeals = DUMMY_MEALS;
+  List<MealModel> favoriteMeals = [];
 
-  Map<String, bool> filters={
+  Map<String, bool> filters = {
     'gluten': false,
     'lactose': false,
     'vegan': false,
@@ -36,7 +37,7 @@ class CubitFilter extends Cubit<List<MealModel>> {
     };
   }
 
-   setFilters(Map<String, bool> filterData) {
+  setFilters(Map<String, bool> filterData) {
     filters = filterData;
     availableMeals = DUMMY_MEALS.where((meal) {
       if (filters['gluten'] && !meal.isGlutenFree) {
@@ -53,6 +54,23 @@ class CubitFilter extends Cubit<List<MealModel>> {
       }
       return true;
     }).toList();
+    emit(availableMeals);
+  }
+
+  toggleFavorite(String mealId) {
+    final existingIndex = favoriteMeals.indexWhere((meal) => meal.id == mealId);
+    if (existingIndex >= 0) {
+      favoriteMeals.removeAt(existingIndex);
+      DUMMY_MEALS[int.parse(mealId)].isFav = false;
+      emitState();
+    } else {
+      favoriteMeals.add(DUMMY_MEALS.firstWhere((meal) => meal.id == mealId));
+      DUMMY_MEALS[int.parse(mealId)].isFav = true;
+      emitState();
+    }
+  }
+  emitState() {
+    emit(favoriteMeals);
     emit(availableMeals);
   }
 }

@@ -1,127 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:udemy_meals_app/screens/favorites_screen.dart';
-
-import './dummy_data.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import './screens/tabs_screen.dart';
 import './screens/meal_detail_screen.dart';
 import './screens/category_meals_screen.dart';
 import './screens/filters_screen.dart';
-import './screens/categories_screen.dart';
 import './models/meal_model.dart';
 import 'cubits/category_cubit.dart';
-import 'cubits/cubit_favorites.dart';
-import 'cubits/cubit_filter.dart';
-import 'cubits/meal_cubit.dart';
+import 'cubits/cubit_main.dart';
 
-void main() {
-  runApp(Home());
+void main() async {
+  await Hive.initFlutter();
+  runApp(const Home());
 }
 
 class Home extends MaterialApp {
-  Home({Key key}) : super(key: key, home: CalculatorView());
+  const Home({Key key}) : super(key: key, home: const HomePage());
 }
 
-class CalculatorView extends StatelessWidget {
-  CalculatorView({Key key}) : super(key: key);
+class HomePage extends StatelessWidget {
+  const HomePage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (BuildContext context) => CategoryCubit()),
-        BlocProvider(create: (BuildContext context) => MealCubit()),
-        BlocProvider(create: (BuildContext context) => CubitFilter()),
-        BlocProvider(create: (BuildContext context) => CubitFavorite())
+        BlocProvider(create: (BuildContext context) => CubitMain()),
       ],
-      child: MyApp(),
+      child: const HomeView(),
     );
   }
 }
 
-class MyApp extends StatefulWidget {
-  MyApp({Key key}) : super(key: key);
+class HomeView extends StatefulWidget {
+  const HomeView({Key key}) : super(key: key);
 
   @override
-  MyAppState createState() => MyAppState();
+  HomeViewState createState() => HomeViewState();
 }
 
-class MyAppState extends State<MyApp> {
-  // Map<String, bool> filters;
-  // List<MealModel> availableMeals = DUMMY_MEALS;
+class HomeViewState extends State<HomeView> {
   List<MealModel> favoriteMeals = [];
-  List<MealModel> viewPageMeals;
-
-  // getPref() async {
-  //   SharedPreferences pref = await SharedPreferences.getInstance();
-  //   if (pref.getBool('_glutenFree') == null) {
-  //     pref.setBool('_lactoseFree', false);
-  //     pref.setBool('_vegan', false);
-  //     pref.setBool('_vegetarian', false);
-  //     pref.setBool('_glutenFree', false);
-  //   }
-  //   bool gluten = pref.getBool('_glutenFree');
-  //   bool lactose = pref.getBool('_lactoseFree');
-  //   bool vegan = pref.getBool('_vegan');
-  //   bool vegetarian = pref.getBool('_vegetarian');
-  //
-  //   filters = {
-  //     'gluten': gluten,
-  //     'lactose': lactose,
-  //     'vegan': vegan,
-  //     'vegetarian': vegetarian,
-  //   };
-  // }
-
-  // void _setFilters(Map<String, bool> filterData) {
-  //   setState(() {
-  //     filters = filterData;
-  //
-  //     availableMeals = DUMMY_MEALS.where((meal) {
-  //       if (filters['gluten'] && !meal.isGlutenFree) {
-  //         return false;
-  //       }
-  //       if (filters['lactose'] && !meal.isLactoseFree) {
-  //         return false;
-  //       }
-  //       if (filters['vegan'] && !meal.isVegan) {
-  //         return false;
-  //       }
-  //       if (filters['vegetarian'] && !meal.isVegetarian) {
-  //         return false;
-  //       }
-  //       return true;
-  //     }).toList();
-  //     setState(() {
-  //     });
-  //   });
-  // }
-
-  void _toggleFavorite(String mealId) {
-    final existingIndex = favoriteMeals.indexWhere((meal) => meal.id == mealId);
-    if (existingIndex >= 0) {
-      setState(() {
-        favoriteMeals.removeAt(existingIndex);
-        //favoriteMeals[int.parse(mealId)].isFav = false;
-        DUMMY_MEALS[int.parse(mealId)].isFav = false;
-      });
-    } else {
-      setState(() {
-        favoriteMeals.add(DUMMY_MEALS.firstWhere((meal) => meal.id == mealId));
-        // favoriteMeals[int.parse(mealId)].isFav = false;
-        DUMMY_MEALS[int.parse(mealId)].isFav = true;
-      });
-    }
-  }
-
-  bool _isMealFavorite(String id) {
-    return favoriteMeals.any((meal) => meal.id == id);
-  }
 
   @override
   Widget build(BuildContext context) {
-    context.read<CubitFilter>().getPref();
+    context.read<CubitMain>().getPref();
     return MaterialApp(
       title: 'DeliMeals',
       theme: ThemeData(
@@ -144,20 +69,9 @@ class MyAppState extends State<MyApp> {
       ),
       initialRoute: '/',
       routes: {
-        '/': (ctx) => TabsScreen(
-              favoriteMeals,
-              _toggleFavorite,
-              _isMealFavorite,
-            ),
-        CategoryMealsScreen.routeName: (ctx) => CategoryMealsScreen(
-              _toggleFavorite,
-              _isMealFavorite,
-            ),
-        MealDetailScreen.routeName: (ctx) => MealDetailScreen(
-              _toggleFavorite,
-              _isMealFavorite,
-              favMeals: favoriteMeals,
-            ),
+        '/': (ctx) => const TabsScreen(),
+        CategoryMealsScreen.routeName: (ctx) => const CategoryMealsScreen(),
+        MealDetailScreen.routeName: (ctx) => MealDetailScreen(),
         FiltersScreen.routeName: (ctx) => FiltersScreen(),
       },
     );

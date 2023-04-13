@@ -2,27 +2,21 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../cubits/cubit_filter.dart';
+import '../cubits/cubit_main.dart';
 import '../dummy_data.dart';
 import '../models/meal_model.dart';
 
 class MealDetailScreen extends StatefulWidget {
   static const routeName = '/meal-detail';
+  MealDetailScreen({Key key}) : super(key: key);
 
-  final Function toggleFavorite;
-  final Function isFavorite;
-  List<MealModel> favMeals;
   int pageCount = 0;
-  MealDetailScreen(this.toggleFavorite, this.isFavorite,
-      {Key key, @required this.favMeals,})
-      : super(key: key);
 
   @override
-  State<MealDetailScreen> createState() => _MealDetailScreenState();
+  State<MealDetailScreen> createState() => MealDetailScreenState();
 }
 
-class _MealDetailScreenState extends State<MealDetailScreen> {
+class MealDetailScreenState extends State<MealDetailScreen> {
   Widget buildSectionTitle(BuildContext context, String text) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
@@ -32,39 +26,61 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
+    List<MealModel> favMeals = context.watch<CubitMain>().favoriteMeals;
     List<MealModel> displayMeals;
     final routeArgs =
         ModalRoute.of(context).settings.arguments as Map<String, String>;
     final mealId = routeArgs['id'];
     final categoryId = routeArgs['title'];
-    print(categoryId);
     if (categoryId != null) {
-      displayMeals = context.read<CubitFilter>().state.where((meal) {
+      displayMeals = context.watch<CubitMain>().availableMeals.where((meal) {
         return meal.categories.contains(categoryId);
       }).toList();
     } else {
-      displayMeals = widget.favMeals;
+      displayMeals = favMeals;
     }
 
-    final PageController controller = PageController(initialPage:int.parse(mealId) );
+    final PageController controller =
+        PageController(initialPage: int.parse(mealId));
     if (displayMeals.isEmpty == true) {
       return Scaffold(
-        appBar: AppBar(
-          title: Text('No Meals to show'),
-        ),
         body: Center(
-          child: Text('Please add meals'),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'You don\'t have any meals',
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.pinkAccent,
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(20))),
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/');
+                    },
+                    icon: Icon(Icons.arrow_back),
+                  )),
+            ],
+          ),
         ),
       );
-     // Navigator.pop(context);
-
     } else {
       return PageView.builder(
         onPageChanged: (count) {
           setState(() {
-            print(count);
             widget.pageCount = count;
           });
         },
@@ -91,13 +107,17 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                       child: IconButton(
                         onPressed: () {
                           setState(() {
-                            widget.toggleFavorite(displayMeals[widget.pageCount].id);
+                            context
+                                .read<CubitMain>()
+                                .toggleFavorite(displayMeals[index].id);
                           });
+
                         },
                         icon: Icon(
                           Icons.favorite,
-                          color:
-                              (displayMeals[index].isFav) ? Colors.red : Colors.white,
+                          color: (displayMeals[index].isFav)
+                              ? Colors.red
+                              : Colors.white,
                           size: 50,
                         ),
                       ),

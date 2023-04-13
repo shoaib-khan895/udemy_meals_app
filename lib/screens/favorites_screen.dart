@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:udemy_meals_app/cubits/cubit_main.dart';
 
 import '../models/meal_model.dart';
 import '../widgets/meal_item.dart';
 
 class FavoritesScreen extends StatefulWidget {
-  List<MealModel> favoriteMeals;
-  final Function toggleFavorite;
-  final Function isFavorite;
-
-  FavoritesScreen(this.favoriteMeals, this.toggleFavorite, this.isFavorite);
-
   @override
-  State<FavoritesScreen> createState() => _FavoritesScreenState();
+  State<FavoritesScreen> createState() => FavoritesScreenState();
 }
 
-class _FavoritesScreenState extends State<FavoritesScreen> {
+class FavoritesScreenState extends State<FavoritesScreen> {
   @override
   Widget build(BuildContext context) {
-    if (widget.favoriteMeals.isEmpty) {
+    List<MealModel> favoriteMeals = context.watch<CubitMain>().favoriteMeals;
+    if (favoriteMeals.isEmpty) {
       return const Center(
         child: Text('You have no favorites yet - start adding some!'),
       );
@@ -26,23 +23,21 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         body: ListView.builder(
           itemBuilder: (ctx, index) {
             return MealItem(
-              id: widget.favoriteMeals[index].id,
-              title: widget.favoriteMeals[index].title,
-              imageUrl: widget.favoriteMeals[index].imageUrl,
-              duration: widget.favoriteMeals[index].duration,
-              affordability: widget.favoriteMeals[index].affordability,
-              complexity: widget.favoriteMeals[index].complexity,
-              toggleFavorite: widget.toggleFavorite,
-              isFavorite: widget.isFavorite,
-              isFav: widget.favoriteMeals[index].isFav,
-              reset: removeItem
-            );
+                id: favoriteMeals[index].id,
+                title: favoriteMeals[index].title,
+                imageUrl: favoriteMeals[index].imageUrl,
+                duration: favoriteMeals[index].duration,
+                affordability: favoriteMeals[index].affordability,
+                complexity: favoriteMeals[index].complexity,
+                isFav: favoriteMeals[index].isFav,
+                reset: removeItem);
           },
-          itemCount: widget.favoriteMeals.length,
+          itemCount: favoriteMeals.length,
         ),
       );
     }
   }
+
   removeItem() {
     setState(() {});
   }

@@ -1,7 +1,8 @@
 
 
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:udemy_meals_app/cubits/cubit_main.dart';
 import '../screens/meal_detail_screen.dart';
 import '../models/meal_model.dart';
 
@@ -12,8 +13,6 @@ class MealItem extends StatefulWidget {
   final int duration;
   final Complexity complexity;
   final Affordability affordability;
-  final Function toggleFavorite;
-  final Function isFavorite;
   final Function reset;
   bool isFav;
   String catId;
@@ -25,8 +24,6 @@ class MealItem extends StatefulWidget {
     @required this.affordability,
     @required this.complexity,
     @required this.duration,
-    @required this.toggleFavorite,
-    @required this.isFavorite,
     @required this.isFav, this.reset, this.catId,
   });
 
@@ -136,7 +133,8 @@ class _MealItemState extends State<MealItem> {
                   child: IconButton(
                     onPressed: () {
                       setState(() {
-                        widget.toggleFavorite(mealId);
+                       // widget.toggleFavorite(mealId);
+                        context.read<CubitMain>().toggleFavorite(mealId);
                         widget.reset();
                       });
                     },
